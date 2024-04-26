@@ -1,4 +1,4 @@
-package com.rawringlory.aironment.ui.theme
+package com.rawringlory.aironment.features.presentation.design_system
 
 import androidx.compose.ui.graphics.Color
 
