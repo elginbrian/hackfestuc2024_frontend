@@ -9,14 +9,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rawringlory.aironment.features.presentation.design_system.AironmentTheme
 import com.rawringlory.aironment.features.presentation.navigation.Screen
 import com.rawringlory.aironment.features.presentation.screen.home_screen.HomeScreen
+import com.rawringlory.aironment.features.presentation.screen.home_screen.HomeScreenViewModel
 import com.rawringlory.aironment.features.presentation.screen.intro_screen.IntroScren
 import com.rawringlory.aironment.features.presentation.screen.login_screen.LoginScreen
 import com.rawringlory.aironment.features.presentation.screen.signup_screen.SignUpScreen
@@ -36,7 +40,17 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     SystemBar()
-                    NavHost(navController = navController, startDestination = Screen.Home.route){
+                    val viewModel = hiltViewModel<HomeScreenViewModel>()
+                    var token = remember{ mutableStateOf("") }
+                    viewModel.getToken {
+                        token.value = it
+                    }
+                    NavHost(navController = navController, startDestination = if(token.value.isNotEmpty()){
+                        Screen.Login.route
+                    } else {
+                        Screen.Home.route
+                    }
+                    ){
                         composable(Screen.Home.route){
                             HomeScreen(navController)
                         }

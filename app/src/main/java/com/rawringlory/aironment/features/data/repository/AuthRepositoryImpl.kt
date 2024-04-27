@@ -2,9 +2,12 @@ package com.rawringlory.aironment.features.data.repository
 
 import android.nfc.Tag
 import android.util.Log
+import com.rawringlory.aironment.features.data.local.TokenDao
+import com.rawringlory.aironment.features.data.local.TokenEntity
 import com.rawringlory.aironment.features.data.remote.auth.AuthApi
 import com.rawringlory.aironment.features.data.remote.auth.request.PostLoginRequest
 import com.rawringlory.aironment.features.data.remote.auth.request.PostRegisterRequest
+import com.rawringlory.aironment.features.data.remote.auth.response.GetUserCurrentResponse
 import com.rawringlory.aironment.features.data.remote.auth.response.Payload
 import com.rawringlory.aironment.features.data.remote.auth.response.Payload2
 import com.rawringlory.aironment.features.data.remote.auth.response.PostLoginResponse
@@ -16,7 +19,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val authApi: AuthApi
+    private val authApi: AuthApi,
+    private val tokenDao: TokenDao
 ): AuthRepository {
     override suspend fun PostLoginRequest(request: PostLoginRequest): PostLoginResponse {
         var response = PostLoginResponse(
@@ -35,6 +39,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
         Log.d("Login", response.toString())
 
+        tokenDao.upsertToken(TokenEntity(response.payload.token))
         return response
     }
 
@@ -51,5 +56,20 @@ class AuthRepositoryImpl @Inject constructor(
 
         Log.d("Register", response.toString())
         return response
+    }
+
+    override suspend fun GetToken(): TokenEntity {
+        val result = tokenDao.getToken()
+        Log.d("get token", result.token)
+        return result
+    }
+
+    override suspend fun GetUserCurrent(): GetUserCurrentResponse {
+        val bearer = withContext(Dispatchers.IO) {
+            async { tokenDao.getToken().token }
+        }.await()
+        val result = authApi.GetUser("Bearer "+ bearer)
+        Log.d("get user", result.toString())
+        return result
     }
 }

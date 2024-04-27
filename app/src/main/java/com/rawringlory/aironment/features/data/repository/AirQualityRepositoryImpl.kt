@@ -30,6 +30,12 @@ class AirQualityRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCurrentCondition(request: GetCurrentConditionRequest): GetCurrentConditionResponse {
-        return airQualityAPI.getCurrentCondition(request = request).toGetCurrentConditionResponse()
+        var result = GetCurrentConditionResponse("","", listOf())
+        try {
+            result = airQualityAPI.getCurrentCondition(request = request).toGetCurrentConditionResponse()
+        } catch(e: Exception){
+            Log.d("air exception", e.localizedMessage.toString())
+        }
+        return result
     }
 }

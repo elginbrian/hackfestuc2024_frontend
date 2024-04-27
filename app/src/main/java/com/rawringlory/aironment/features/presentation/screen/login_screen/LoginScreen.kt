@@ -96,7 +96,7 @@ fun LoginScreen(
                 Column(modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        if (email.value.contains("@gmail.com") && password.value.length >= 6) {
+                        if (email.value.contains("@gmail.com") && password.value.length >= 8) {
                             viewModel.login(PostLoginRequest(email.value, password.value)) {
                                         if (!it.error) {
                                         navController.navigate(Screen.Home.route)
@@ -111,7 +111,7 @@ fun LoginScreen(
                             }
                         } else if (!email.value.contains("@gmail.com")){
                             Toast.makeText(context, "Masukkan email yang valid.", Toast.LENGTH_LONG).show()
-                        } else if (password.value.length < 6){
+                        } else if (password.value.length < 8){
                             Toast.makeText(context, "Password minimal terdiri dari 6 karakter", Toast.LENGTH_LONG).show()
                         }
                     }, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {

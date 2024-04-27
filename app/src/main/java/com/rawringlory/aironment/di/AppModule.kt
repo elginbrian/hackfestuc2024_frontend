@@ -1,5 +1,9 @@
 package com.rawringlory.aironment.di
 
+import android.content.Context
+import androidx.room.Room
+import com.rawringlory.aironment.features.data.local.TokenDao
+import com.rawringlory.aironment.features.data.local.TokenDatabase
 import com.rawringlory.aironment.features.data.remote.airquality_api.AirQualityAPI
 import com.rawringlory.aironment.features.data.remote.auth.AuthApi
 import com.rawringlory.aironment.features.data.repository.AirQualityRepositoryImpl
@@ -9,6 +13,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -36,4 +41,15 @@ object AppModule {
             .build()
             .create(AuthApi::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideTokenDatabase(@ApplicationContext context: Context): TokenDatabase =
+        Room.databaseBuilder(context, TokenDatabase::class.java, "token_db")
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Singleton
+    @Provides
+    fun provideTokenDAO(TokenDatabase: TokenDatabase): TokenDao = TokenDatabase.TokenDao()
 }

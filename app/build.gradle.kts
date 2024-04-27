@@ -107,6 +107,7 @@ dependencies {
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.35.0-alpha")
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
 
     // Google maps
     implementation("com.google.android.gms:play-services-maps:18.1.0")
@@ -120,6 +121,7 @@ dependencies {
 
     // KTX for the Maps SDK for Android Utility Library
     implementation("com.google.maps.android:maps-utils-ktx:3.2.1")
+
 }
 
 kapt{

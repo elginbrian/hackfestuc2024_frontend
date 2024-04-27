@@ -199,7 +199,7 @@ fun SignUpScreen(
                     Column(modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            if(name.value.isNotEmpty() && email.value.contains("@gmail.com") && password.value.length >= 6){
+                            if(name.value.isNotEmpty() && email.value.contains("@gmail.com") && password.value.length >= 8){
                                 viewModel.signUp(PostRegisterRequest(email.value, password.value, name.value)){
                                     if (!it.error) {
                                         navController.navigate(Screen.Login.route)
@@ -216,7 +216,7 @@ fun SignUpScreen(
                                 Toast.makeText(context, "Nama tidak boleh kosong.", Toast.LENGTH_LONG).show()
                             } else if (!email.value.contains("@gmail.com")){
                                 Toast.makeText(context, "Masukkan email yang valid.", Toast.LENGTH_LONG).show()
-                            } else if (password.value.length < 6){
+                            } else if (password.value.length < 8){
                                 Toast.makeText(context, "Password minimal terdiri dari 6 karakter", Toast.LENGTH_LONG).show()
                             }
                         }, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {

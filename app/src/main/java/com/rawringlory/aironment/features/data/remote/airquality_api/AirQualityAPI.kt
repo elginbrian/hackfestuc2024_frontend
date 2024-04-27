@@ -12,9 +12,9 @@ import retrofit2.http.Query
 
 interface AirQualityAPI {
     @Headers("Content-Type: application/json")
-    @POST("/v1/currentConditions:lookup?key=AIzaSyBXriY9Lm3hmD3R8BA110CaDYD5q0tec44s")
+    @POST("v1/currentConditions:lookup")
     suspend fun getCurrentCondition(
-        //@Header("Authorization") apiKey: String = Constant.AQI_API_KEY,
+        @Header("Authorization") apiKey: String = Constant.AQI_API_KEY,
         @Body request: GetCurrentConditionRequest
     ): GetCurrentConditionDto
 }
