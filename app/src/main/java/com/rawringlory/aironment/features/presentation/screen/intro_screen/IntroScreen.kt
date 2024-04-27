@@ -64,9 +64,9 @@ fun IntroScren(
                 Column(modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)) {
-                    Text(text = "Halo, Selamat Datang di LoremIpsum!", fontWeight = FontWeight.Medium, fontSize = 23.sp, lineHeight = 32.sp)
+                    Text(text = "Halo, Selamat Datang di Aironment!", fontWeight = FontWeight.Medium, fontSize = 23.sp, lineHeight = 32.sp)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Lorem ipsum dot amet lalalala hey he ppppp lalalal lorem ipsum dot amet lorem ipsum dot amet lorem.",
+                    Text(text = "Dapatkan informasi kualitas udara & komunitas peduli lingkungan! Bersama, kita bisa buat bumi lebih hijau dan sehat!",
                         lineHeight = 24.sp,
                         color = Color(0xFF929292)
                     )

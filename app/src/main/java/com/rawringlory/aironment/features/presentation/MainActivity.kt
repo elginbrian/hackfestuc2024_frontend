@@ -57,11 +57,11 @@ class MainActivity : ComponentActivity() {
 
                     var currentId = "0"
 
-                    NavHost(navController = navController, startDestination = if(token.value.isNotEmpty()){
+                    NavHost(navController = navController, startDestination = //if(token.value.isNotEmpty()){
                         Screen.Login.route
-                    } else {
-                        Screen.Home.route
-                    }
+//                    } else {
+//                        Screen.Home.route
+//                    }
 
                     ){
                         composable(Screen.Home.route){

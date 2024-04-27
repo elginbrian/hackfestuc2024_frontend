@@ -155,8 +155,11 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun GetCommunity(): GetCommunityResponse {
         var result = GetCommunityResponse(true, "", listOf())
+        val bearer = withContext(Dispatchers.IO) {
+            async { tokenDao.getToken().token }
+        }.await()
         try {
-            result = authApi.GetCommunity("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uIjp0cnVlLCJlbWFpbCI6ImVsZ2luYnJpYW40OUBnbWFpbC5jb20iLCJleHAiOjE3MTQyNTYyMzAsImlkIjoiOGM3MWE3OWYtZDgyYS00N2FhLWEzM2UtNWRmNGU5NzgzZDAxIn0.bYEF4k_16LsVVh8Ws_Je_t6H8KRv37_3pk9dEfancSU")
+            result = authApi.GetCommunity("Bearer "+bearer)//("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uIjp0cnVlLCJlbWFpbCI6ImVsZ2luYnJpYW40OUBnbWFpbC5jb20iLCJleHAiOjE3MTQyNTYyMzAsImlkIjoiOGM3MWE3OWYtZDgyYS00N2FhLWEzM2UtNWRmNGU5NzgzZDAxIn0.bYEF4k_16LsVVh8Ws_Je_t6H8KRv37_3pk9dEfancSU")
         } catch (e: Exception){
             Log.d("Get community", e.toString())
         }
@@ -168,6 +171,7 @@ class AuthRepositoryImpl @Inject constructor(
            Detail("", listOf()), listOf()
        ))
         try {
+
              result = withContext(Dispatchers.IO) {
                 authApi.GetCommunityDetails(
                     bearer = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uIjp0cnVlLCJlbWFpbCI6ImVsZ2luYnJpYW40OUBnbWFpbC5jb20iLCJleHAiOjE3MTQyNTYyMzAsImlkIjoiOGM3MWE3OWYtZDgyYS00N2FhLWEzM2UtNWRmNGU5NzgzZDAxIn0.bYEF4k_16LsVVh8Ws_Je_t6H8KRv37_3pk9dEfancSU",
