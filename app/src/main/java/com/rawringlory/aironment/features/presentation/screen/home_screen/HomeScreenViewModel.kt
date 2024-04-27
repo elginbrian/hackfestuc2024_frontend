@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rawringlory.aironment.features.data.remote.airquality_api.request.GetCurrentConditionRequest
 import com.rawringlory.aironment.features.data.remote.airquality_api.response.NearestCityDataResponse
+import com.rawringlory.aironment.features.data.remote.auth.response.AirQualityResponse
 import com.rawringlory.aironment.features.data.remote.auth.response.GetLatLgd
 import com.rawringlory.aironment.features.data.remote.auth.response.GetUserCurrentResponse
 import com.rawringlory.aironment.features.data.remote.auth.response.Payload3
@@ -54,11 +55,13 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    fun getAqi(getCurrentConditionRequest: GetCurrentConditionRequest,
-               onFinished: (GetCurrentConditionResponse) -> Unit
-               ){
+    fun getAirQuality(
+        latitude: Double,
+        longitude: Double,
+        onFinished: (AirQualityResponse) -> Unit
+    ){
         viewModelScope.launch {
-            val result = aqiRepository.getCurrentCondition(getCurrentConditionRequest)
+            val result = authRepository.GetAirQuality(latitude, longitude)
             Log.d("result", result.toString())
             onFinished(result)
         }

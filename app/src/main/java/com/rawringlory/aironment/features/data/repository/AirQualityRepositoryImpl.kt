@@ -5,6 +5,7 @@ import com.rawringlory.aironment.features.data.remote.airquality_api.AirQualityA
 import com.rawringlory.aironment.features.data.remote.airquality_api.AqiAPI
 import com.rawringlory.aironment.features.data.remote.airquality_api.request.GetCurrentConditionRequest
 import com.rawringlory.aironment.features.data.remote.airquality_api.response.NearestCityDataResponse
+import com.rawringlory.aironment.features.data.remote.auth.response.AirQualityResponse
 import com.rawringlory.aironment.features.domain.model.GetCurrentConditionResponse
 import com.rawringlory.aironment.features.domain.repository.AirQualityApiRepository
 import javax.inject.Inject

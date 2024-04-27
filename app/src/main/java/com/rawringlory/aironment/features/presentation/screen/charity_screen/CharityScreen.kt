@@ -40,14 +40,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.rawringlory.aironment.features.data.remote.auth.response.Detail
+import com.rawringlory.aironment.features.data.remote.auth.response.GetCommunityDetailsResponse
+import com.rawringlory.aironment.features.data.remote.auth.response.Payload7
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 @Preview
-fun CharityScreen(){
+fun CharityScreen(
+    id: String = "",
+    navController: NavController = rememberNavController()
+){
     val selectedTab = remember {
         mutableStateOf(0)
+    }
+    val viewModel = hiltViewModel<CharityViewModel>()
+    var details =  GetCommunityDetailsResponse(error = true, message = "", payload = Payload7(
+        Detail("", listOf()), listOf()
+    )
+    )
+    viewModel.getCommunityDetails(id = id){
+            details = it
     }
     Scaffold(
         containerColor = androidx.compose.ui.graphics.Color.LightGray,
@@ -113,7 +130,7 @@ fun CharityScreen(){
                                         item{
                                             Text(text = "Tentang", fontWeight = FontWeight.Medium, fontSize = 18.sp)
                                             Spacer(modifier = Modifier.padding(2.dp))
-                                            Text(text = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                                            Text(text = details.payload.detail.description,
                                                 fontSize = 15.sp)
 
                                             Spacer(modifier = Modifier.padding(16.dp))

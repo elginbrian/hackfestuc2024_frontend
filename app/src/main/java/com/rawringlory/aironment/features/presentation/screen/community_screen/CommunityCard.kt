@@ -1,6 +1,7 @@
 package com.rawringlory.aironment.features.presentation.screen.community_screen
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,15 +23,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.rawringlory.aironment.features.data.remote.auth.response.Payload6
 
 @Composable
-@Preview
-fun CommunityCard(){
+//@Preview
+fun CommunityCard(payload: Payload6, onTapDetails: (String) -> Unit){
     Card(modifier = Modifier
         .fillMaxWidth()
         .height(120.dp),
@@ -45,14 +48,14 @@ fun CommunityCard(){
                 colors = CardDefaults.cardColors(Color.White),
                 border = BorderStroke(1.dp, Color.LightGray)
             ) {
-                AsyncImage(model = "", contentDescription = "")
+                AsyncImage(model = payload.profilePicture, contentDescription = "profile", modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
             }
 
             Column(modifier = Modifier
                 .fillMaxHeight()
                 .padding(start = 12.dp), verticalArrangement = Arrangement.Center) {
-                Text(text = "Komunitas ABC", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                Text(text = "Komunitas yang bergerak di bidang abc...", fontSize = 12.sp)
+                Text(text = payload.name, fontSize = 16.sp, fontWeight = FontWeight.Medium, maxLines = 1)
+                Text(text = payload.description, fontSize = 12.sp, lineHeight = 14.sp, maxLines = 2)
                 Spacer(modifier = Modifier.padding(4.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Card(modifier = Modifier
@@ -71,7 +74,9 @@ fun CommunityCard(){
                         colors = CardDefaults.cardColors(Color.White),
                         border = BorderStroke(1.dp, Color(0xFF2FB9AD))
                     ) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier.fillMaxSize().clickable{
+                                                                       onTapDetails(payload.id)
+                        }, contentAlignment = Alignment.Center) {
                             Text(text = "Detail", color = Color(0xFF2FB9AD))
                         }
                     }

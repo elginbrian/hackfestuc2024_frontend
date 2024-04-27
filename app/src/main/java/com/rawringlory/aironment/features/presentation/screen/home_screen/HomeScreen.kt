@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -52,6 +53,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.rawringlory.aironment.R
 import com.rawringlory.aironment.features.data.remote.airquality_api.request.GetCurrentConditionRequest
 import com.rawringlory.aironment.features.data.remote.airquality_api.request.Location
+import com.rawringlory.aironment.features.data.remote.auth.response.Index
+import com.rawringlory.aironment.features.presentation.navigation.Screen
 import getUserLocation
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -59,7 +62,7 @@ import getUserLocation
 @Preview
 fun HomeScreen(navController: NavController = rememberNavController()){
     val context = LocalContext.current
-    var current = remember { mutableStateOf(LatLng(-7.250445,112.768845)) }
+    var current = remember { mutableStateOf(LatLng(-7.2855,112.6315)) }
     RequestLocationPermission(
         onPermissionGranted = { /*TODO*/ },
         onPermissionDenied = { /*TODO*/ }) {
@@ -69,27 +72,40 @@ fun HomeScreen(navController: NavController = rememberNavController()){
     }
     
     val viewModel = hiltViewModel<HomeScreenViewModel>()
-    val currentCoordinate = LatLng(-7.250445,112.768845)
+    val currentCoordinate = LatLng(-7.2855,112.6315)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(-7.250445,112.768845), 9f)
-    }
-    viewModel.getToken {
-        Log.d("Token", it)
-    }
-    viewModel.getUserCurrent {
-        Log.d("User", it.toString())
+        position = CameraPosition.fromLatLngZoom(LatLng(-7.2855,112.6315), 14.5f)
     }
 
-    var LatLgdList = remember {
-        mutableStateOf(listOf<com.rawringlory.aironment.features.data.remote.auth.response.Location>(
-            com.rawringlory.aironment.features.data.remote.auth.response.Location(0.0,0.0),
-            com.rawringlory.aironment.features.data.remote.auth.response.Location(0.0,0.0),
-            com.rawringlory.aironment.features.data.remote.auth.response.Location(0.0,0.0)
-            ))
+    var airQualityList = remember {
+        mutableStateOf(mutableListOf<Index>(
+            Index(0,"","","", com.rawringlory.aironment.features.data.remote.auth.response.Color(0.0, 0.0),"",""),
+            Index(0,"","","", com.rawringlory.aironment.features.data.remote.auth.response.Color(0.0, 0.0),"",""),
+            Index(0,"","","", com.rawringlory.aironment.features.data.remote.auth.response.Color(0.0, 0.0),"",""),
+            Index(70,"","","", com.rawringlory.aironment.features.data.remote.auth.response.Color(0.0, 0.0),"",""),
+            Index(0,"","","", com.rawringlory.aironment.features.data.remote.auth.response.Color(0.0, 0.0),"",""),
+            Index(120,"","","", com.rawringlory.aironment.features.data.remote.auth.response.Color(0.0, 0.0),"",""),
+            Index(0,"","","", com.rawringlory.aironment.features.data.remote.auth.response.Color(0.0, 0.0),"",""),
+            Index(0,"","","", com.rawringlory.aironment.features.data.remote.auth.response.Color(0.0, 0.0),"",""),
+            Index(0,"","","", com.rawringlory.aironment.features.data.remote.auth.response.Color(0.0, 0.0),"",""),
+        ))
     }
-    viewModel.getLatLgd(current.value.latitude, current.value.longitude){
-        Log.d("LatLgd", it.toString())
-        LatLgdList.value = it.payload
+    var latLgnList = remember {
+        mutableStateOf(mutableListOf(
+            LatLng(0.0,0.0), LatLng(0.0,0.0),LatLng(0.0,0.0),LatLng(0.0,0.0),LatLng(0.0,0.0),LatLng(0.0,0.0),LatLng(0.0,0.0), LatLng(0.0,0.0)
+        ))
+    }
+
+    var i = 0;
+    viewModel.getLatLgd(-7.2855,112.6315){
+        for(data in it.payload){
+            latLgnList.value[i] = LatLng(data.latitude, data.longitude)
+
+            viewModel.getAirQuality(data.latitude, data.longitude){
+                airQualityList.value[i] = it.indexes[0]
+            }
+            i++;
+        }
     }
 
     Scaffold(
@@ -117,14 +133,22 @@ fun HomeScreen(navController: NavController = rememberNavController()){
                 cameraPositionState = cameraPositionState,
                 uiSettings = MapUiSettings(mapToolbarEnabled = false)
             ) {
-                MapMarker(context = context, position = currentCoordinate, title = "Current Position", iconResourceId = R.drawable.greenpin)
-                MapMarker(context = context, position = LatLng(LatLgdList.value[0].latitude , LatLgdList.value[0].longitude), title = "around", iconResourceId = R.drawable.yellowpin)
-                MapMarker(context = context, position = LatLng(LatLgdList.value[1].latitude, LatLgdList.value[1].longitude), title = "around", iconResourceId = R.drawable.yellowpin)
-                MapMarker(context = context, position = LatLng(LatLgdList.value[2].latitude, LatLgdList.value[2].longitude), title = "around", iconResourceId = R.drawable.yellowpin)
+                MapMarker(context = context, position = currentCoordinate, title = "Current Position", 1, navController)
+                if(latLgnList.value[7].latitude != 0.0){
+                    MapMarker(context = context, position = latLgnList.value[0], title = airQualityList.value[0].aqiDisplay, airQualityList.value[0].aqi, navController)
+                    MapMarker(context = context, position = latLgnList.value[1], title = airQualityList.value[1].aqiDisplay, airQualityList.value[1].aqi, navController)
+                    MapMarker(context = context, position = latLgnList.value[2], title = airQualityList.value[2].aqiDisplay, airQualityList.value[2].aqi, navController)
+                    MapMarker(context = context, position = latLgnList.value[3], title = airQualityList.value[3].aqiDisplay, airQualityList.value[3].aqi, navController)
+                    MapMarker(context = context, position = latLgnList.value[4], title = airQualityList.value[4].aqiDisplay, airQualityList.value[4].aqi, navController)
+                    MapMarker(context = context, position = latLgnList.value[5], title = airQualityList.value[5].aqiDisplay, airQualityList.value[5].aqi, navController)
+                    MapMarker(context = context, position = latLgnList.value[6], title = airQualityList.value[6].aqiDisplay, airQualityList.value[6].aqi, navController)
+                    MapMarker(context = context, position = latLgnList.value[7], title = airQualityList.value[7].aqiDisplay, airQualityList.value[7].aqi, navController)
+                }
+
 
         } },
         bottomBar = {
-            Text(text = current.value.toString())
+            Text(text = "   " + current.value.toString(), fontSize = 10.sp)
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .padding(32.dp),
@@ -147,7 +171,11 @@ fun HomeScreen(navController: NavController = rememberNavController()){
                         }
 
                         Box(modifier = Modifier.size(45.dp)){
-                            Image(painter = painterResource(id = R.drawable.komunitas), contentDescription = "aironment logo", modifier = Modifier.fillMaxSize())
+                            Image(painter = painterResource(id = R.drawable.komunitas), contentDescription = "aironment logo", modifier = Modifier
+                                .fillMaxSize()
+                                .clickable {
+                                    navController.navigate(Screen.Community.route)
+                                })
                         }
 
                         Box(modifier = Modifier.size(45.dp)){
@@ -169,15 +197,35 @@ fun MapMarker(
     context: Context,
     position: LatLng,
     title: String,
-    @DrawableRes iconResourceId: Int
+    score: Int,
+    navController: NavController = rememberNavController()
 ) {
+    val resList = listOf(R.drawable.greenpin, R.drawable.yellowpin, R.drawable.redpin)
     val icon = bitmapDescriptorFromVector(
-        context, iconResourceId
+        context, if(score < 50) {
+            resList[0]
+        } else if(score >= 50 && score < 100){
+            resList[1]
+        } else if(score >= 100){
+            resList[2]
+        } else {
+            resList[2]
+        }
     )
     Marker(
         state = MarkerState(position = position),
-        title = title,
+        title = "AQI: " + title,
         icon = icon,
+        onClick = {
+            if(score < 50){
+                navController.navigate(Screen.HealthyScreen.route)
+            } else if(score >= 50 && score < 100){
+                navController.navigate(Screen.MidScreen.route)
+            } else if(score >= 100){
+                navController.navigate(Screen.DangerScreen.route)
+            }
+            false
+        }
     )
 }
 
