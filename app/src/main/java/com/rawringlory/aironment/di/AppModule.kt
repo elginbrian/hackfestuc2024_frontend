@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.rawringlory.aironment.features.data.local.TokenDao
 import com.rawringlory.aironment.features.data.local.TokenDatabase
 import com.rawringlory.aironment.features.data.remote.airquality_api.AirQualityAPI
+import com.rawringlory.aironment.features.data.remote.airquality_api.AqiAPI
 import com.rawringlory.aironment.features.data.remote.auth.AuthApi
 import com.rawringlory.aironment.features.data.repository.AirQualityRepositoryImpl
 import com.rawringlory.aironment.features.domain.repository.AirQualityApiRepository
@@ -30,6 +31,16 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AirQualityAPI::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAqiAPI(): AqiAPI {
+        return Retrofit.Builder()
+            .baseUrl(Constant.AQI_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AqiAPI::class.java)
     }
 
     @Singleton

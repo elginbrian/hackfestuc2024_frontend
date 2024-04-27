@@ -7,6 +7,7 @@ import com.rawringlory.aironment.features.data.local.TokenEntity
 import com.rawringlory.aironment.features.data.remote.auth.AuthApi
 import com.rawringlory.aironment.features.data.remote.auth.request.PostLoginRequest
 import com.rawringlory.aironment.features.data.remote.auth.request.PostRegisterRequest
+import com.rawringlory.aironment.features.data.remote.auth.response.GetLatLgd
 import com.rawringlory.aironment.features.data.remote.auth.response.GetUserCurrentResponse
 import com.rawringlory.aironment.features.data.remote.auth.response.Payload
 import com.rawringlory.aironment.features.data.remote.auth.response.Payload2
@@ -70,6 +71,14 @@ class AuthRepositoryImpl @Inject constructor(
         }.await()
         val result = authApi.GetUser("Bearer "+ bearer)
         Log.d("get user", result.toString())
+        return result
+    }
+
+    override suspend fun GetLatLgd(latitude: Double, longitude: Double): GetLatLgd {
+        val bearer = withContext(Dispatchers.IO) {
+            async { tokenDao.getToken().token }
+        }.await()
+        val result = authApi.GetLatLgd("Bearer "+ bearer, latitude, longitude)
         return result
     }
 }

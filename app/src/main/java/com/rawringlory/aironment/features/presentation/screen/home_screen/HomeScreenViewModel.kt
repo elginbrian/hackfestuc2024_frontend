@@ -1,12 +1,11 @@
 package com.rawringlory.aironment.features.presentation.screen.home_screen
 
-import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
 import com.rawringlory.aironment.features.data.remote.airquality_api.request.GetCurrentConditionRequest
+import com.rawringlory.aironment.features.data.remote.airquality_api.response.NearestCityDataResponse
+import com.rawringlory.aironment.features.data.remote.auth.response.GetLatLgd
 import com.rawringlory.aironment.features.data.remote.auth.response.GetUserCurrentResponse
 import com.rawringlory.aironment.features.data.remote.auth.response.Payload3
 import com.rawringlory.aironment.features.domain.model.GetCurrentConditionResponse
@@ -43,12 +42,34 @@ class HomeScreenViewModel @Inject constructor(
         onFinished(result)
     }
 
-    fun getCurrentCondition(
-        request: GetCurrentConditionRequest,
-        onFinished: (GetCurrentConditionResponse) -> Unit
+    fun getLatLgd(
+        latitude: Double,
+        longitude: Double,
+        onFinished: (GetLatLgd) -> Unit
+    ) {
+        viewModelScope.launch {
+            val result = authRepository.GetLatLgd(latitude, longitude)
+            Log.d("result", result.toString())
+            onFinished(result)
+        }
+    }
+
+    fun getAqi(getCurrentConditionRequest: GetCurrentConditionRequest,
+               onFinished: (GetCurrentConditionResponse) -> Unit
+               ){
+        viewModelScope.launch {
+            val result = aqiRepository.getCurrentCondition(getCurrentConditionRequest)
+            Log.d("result", result.toString())
+            onFinished(result)
+        }
+    }
+    fun getNearestCityData(
+        latitude: Double,
+        longitude: Double,
+        onFinished: (NearestCityDataResponse) -> Unit
     ){
         viewModelScope.launch {
-            val result = aqiRepository.getCurrentCondition(request)
+            val result = aqiRepository.getNearestCityData(latitude, longitude)
             Log.d("result", result.toString())
             onFinished(result)
         }

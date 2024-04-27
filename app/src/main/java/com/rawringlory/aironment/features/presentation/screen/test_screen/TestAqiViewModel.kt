@@ -20,16 +20,6 @@ class TestAqiViewModel @Inject constructor(
     private val aqiRepository: AirQualityApiRepository,
     private val authRepository: AuthRepository
 ): ViewModel() {
-    fun getCurrentCondition(
-        request: GetCurrentConditionRequest,
-        onFinished: (GetCurrentConditionResponse) -> Unit
-    ){
-        viewModelScope.launch {
-            val result = aqiRepository.getCurrentCondition(request)
-            Log.d("result", result.toString())
-            onFinished(result)
-        }
-    }
 
     fun signUp(
         request: PostRegisterRequest,

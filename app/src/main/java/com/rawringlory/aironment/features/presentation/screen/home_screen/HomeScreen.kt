@@ -71,7 +71,7 @@ fun HomeScreen(navController: NavController = rememberNavController()){
     val viewModel = hiltViewModel<HomeScreenViewModel>()
     val currentCoordinate = LatLng(-7.250445,112.768845)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(-7.250445,112.768845), 13.9f)
+        position = CameraPosition.fromLatLngZoom(LatLng(-7.250445,112.768845), 9f)
     }
     viewModel.getToken {
         Log.d("Token", it)
@@ -79,8 +79,17 @@ fun HomeScreen(navController: NavController = rememberNavController()){
     viewModel.getUserCurrent {
         Log.d("User", it.toString())
     }
-    viewModel.getCurrentCondition(GetCurrentConditionRequest(Location(currentCoordinate.latitude, currentCoordinate.longitude))){
-        Log.d("Air quality", it.toString())
+
+    var LatLgdList = remember {
+        mutableStateOf(listOf<com.rawringlory.aironment.features.data.remote.auth.response.Location>(
+            com.rawringlory.aironment.features.data.remote.auth.response.Location(0.0,0.0),
+            com.rawringlory.aironment.features.data.remote.auth.response.Location(0.0,0.0),
+            com.rawringlory.aironment.features.data.remote.auth.response.Location(0.0,0.0)
+            ))
+    }
+    viewModel.getLatLgd(current.value.latitude, current.value.longitude){
+        Log.d("LatLgd", it.toString())
+        LatLgdList.value = it.payload
     }
 
     Scaffold(
@@ -109,19 +118,24 @@ fun HomeScreen(navController: NavController = rememberNavController()){
                 uiSettings = MapUiSettings(mapToolbarEnabled = false)
             ) {
                 MapMarker(context = context, position = currentCoordinate, title = "Current Position", iconResourceId = R.drawable.greenpin)
-
+                MapMarker(context = context, position = LatLng(LatLgdList.value[0].latitude , LatLgdList.value[0].longitude), title = "around", iconResourceId = R.drawable.yellowpin)
+                MapMarker(context = context, position = LatLng(LatLgdList.value[1].latitude, LatLgdList.value[1].longitude), title = "around", iconResourceId = R.drawable.yellowpin)
+                MapMarker(context = context, position = LatLng(LatLgdList.value[2].latitude, LatLgdList.value[2].longitude), title = "around", iconResourceId = R.drawable.yellowpin)
 
         } },
         bottomBar = {
             Text(text = current.value.toString())
             Box(modifier = Modifier
                 .fillMaxWidth()
-                .padding(32.dp)) {
+                .padding(32.dp),
+
+            ) {
                 Card(modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp),
                     colors = CardDefaults.cardColors(Color(0xFFF8F7F7)),
-                    shape = RoundedCornerShape(50.dp)
+                    shape = RoundedCornerShape(50.dp),
+                    elevation = CardDefaults.cardElevation(4.dp)
                     ) {
                     Row(modifier = Modifier
                         .fillMaxSize()

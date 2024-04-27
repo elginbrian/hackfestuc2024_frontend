@@ -1,40 +1,34 @@
 package com.rawringlory.aironment.features.data.repository
 
 import android.util.Log
-import com.rawringlory.aironment.features.data.mapper.toGetCurrentConditionResponse
 import com.rawringlory.aironment.features.data.remote.airquality_api.AirQualityAPI
+import com.rawringlory.aironment.features.data.remote.airquality_api.AqiAPI
 import com.rawringlory.aironment.features.data.remote.airquality_api.request.GetCurrentConditionRequest
+import com.rawringlory.aironment.features.data.remote.airquality_api.response.NearestCityDataResponse
 import com.rawringlory.aironment.features.domain.model.GetCurrentConditionResponse
 import com.rawringlory.aironment.features.domain.repository.AirQualityApiRepository
-import com.rawringlory.aironment.features.util.DataWrapper
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class AirQualityRepositoryImpl @Inject constructor(
+    private val aqiAPI: AqiAPI,
     private val airQualityAPI: AirQualityAPI
 ): AirQualityApiRepository {
-    override suspend fun getCurrentConditionFlow(request: GetCurrentConditionRequest): Flow<DataWrapper<GetCurrentConditionResponse>> {
-        return flow {
-            emit(DataWrapper.Loading(true))
-            val result = airQualityAPI.getCurrentCondition(request = request)
-            if(result.regionCode?.isNotEmpty() == true){
-                Log.d("getCurrentCondition", result.toString())
-                emit(DataWrapper.Success(
-                    data = result.toGetCurrentConditionResponse()
-                ))
-                emit(DataWrapper.Loading(false))
-                return@flow
-            }
-        }
+
+    override suspend fun getNearestCityData(
+        latitude: Double,
+        longitude: Double
+    ): NearestCityDataResponse {
+        val result = aqiAPI.getNearestCityData(latitude, longitude)
+        Log.d("result", result.toString())
+        return result
     }
 
     override suspend fun getCurrentCondition(request: GetCurrentConditionRequest): GetCurrentConditionResponse {
         var result = GetCurrentConditionResponse("","", listOf())
         try {
-            result = airQualityAPI.getCurrentCondition(request = request).toGetCurrentConditionResponse()
+            result = airQualityAPI.getCurrentCondition(request = request)
         } catch(e: Exception){
-            Log.d("air exception", e.localizedMessage.toString())
+            Log.d("air exception", e.toString())
         }
         return result
     }
