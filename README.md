@@ -1,5 +1,4 @@
 <h1>Team name: Rawr in Glory🦁🔥</h1>
-<br/>
 <h3>Front-End Technologies🚀:</h3>
 <ul>
   <li><p>Kotlin</p></li>
