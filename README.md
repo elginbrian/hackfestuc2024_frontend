@@ -10,3 +10,7 @@
   <li><p>JSON Converter</p></li>
   <li><p>Coil</p></li>
 </ul>
+
+<h3>Screenshots📸:</h3>
+
+![Display](https://github.com/elginbrian/hackfestuc2024_frontend/assets/132267129/5b18fff5-1736-4c50-a101-135f3acc94a0)
