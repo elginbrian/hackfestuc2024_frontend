@@ -50,15 +50,15 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     SystemBar()
                     val viewModel = hiltViewModel<HomeScreenViewModel>()
-                    var token = remember{ mutableStateOf("") }
-                    viewModel.getToken {
-                        token.value = it
-                    }
+//                    var token = remember{ mutableStateOf("") }
+//                    viewModel.getToken {
+//                        token.value = it
+//                    }
 
                     var currentId = "0"
 
                     NavHost(navController = navController, startDestination = //if(token.value.isNotEmpty()){
-                        Screen.Login.route
+                        Screen.Intro.route
 //                    } else {
 //                        Screen.Home.route
 //                    }

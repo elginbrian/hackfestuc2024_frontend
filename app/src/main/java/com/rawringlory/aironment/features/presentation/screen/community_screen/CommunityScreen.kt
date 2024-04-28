@@ -87,6 +87,7 @@ fun CommunityScreen(
                     items(communityList.value){
                         CommunityCard(it){
                             onTapDetails(it)
+                            navController.navigate(Screen.Charity.route)
                         }
                     }
                   }
